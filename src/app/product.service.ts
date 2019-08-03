@@ -28,10 +28,17 @@ export class ProductService {
       );
   }
 
-  deleteProductByID(id:Number){
+  deleteProductByID(id:Number): Observable<any>{
     console.log(apiUrl+'/delete/${id}');
-    return this.http.get(apiUrl+'/delete/'+id) .pipe(
+    return this.http.get(apiUrl+'/delete/'+id).pipe(
         catchError(this.handleError('delete', []))
+      );  
+  }
+  
+  getProductByID(id:Number):Observable<Product>{
+    console.log(apiUrl+'/edit/${id}');
+    return this.http.get<any>(apiUrl+'/edit/'+id) .pipe(
+        catchError(this.handleError('edit', []))
       );  
   }
 

@@ -15,12 +15,14 @@ export class ProductComponent implements OnInit {
     private formBuilder: FormBuilder) { }
     productForm: FormGroup;
     productName = '';
+    product:any;
     price: number = null;
     isLoadingResults = false;
   ngOnInit() {
     this.productForm = this.formBuilder.group({
       'productName' : [null, Validators.required],
-      'price' : [null, Validators.required]
+      'price' : [null, Validators.required],
+       "id":[null]
     });
 
    this.gtProductList();
@@ -50,6 +52,21 @@ export class ProductComponent implements OnInit {
     this.pservice.deleteProductByID(id).subscribe(data=>{
         console.log("hi"+data.toString());
       this.gtProductList();
+    });
+
+  //  this.gtProductList();
+  }
+  prod=new Product();
+  editProduct(id){
+    console.log("Edit"+id);
+    this.pservice.getProductByID(id).subscribe(data=>{
+      this.prod=data;
+   this.productForm.setValue({
+     productName:this.prod.productName,
+     price:this.prod.price,
+     id:this.prod.id
+
+   })
     });
 
   //  this.gtProductList();
