@@ -3,6 +3,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { catchError, tap, map } from 'rxjs/operators';
 import { Product } from './product/product';
+import { ProductUtils } from './product/productutils';
 const httpOptions = {
   headers: new HttpHeaders({'Content-Type': 'application/json'})
 };
@@ -14,12 +15,27 @@ export class ProductService {
 
   constructor(private http: HttpClient) { }
 
-  addProduct(product: Product): Observable<Product> {
-    return this.http.post<Product>(apiUrl+"/add", product, httpOptions).pipe(
+  addProduct(product: Product,image:File): Observable<Product> {
+    return this.http.post<Product>(apiUrl+ProductUtils.createProductUrl,ProductUtils.convertProduct(product,image)).pipe(
       tap((prod: Product) => console.log(`added product w/ id=${product.id}`)),
       catchError(this.handleError<Product>('addProduct'))
     );
   }
+
+  uploadFile( file: File ) : Observable<any>  
+  {  
+    let url = apiUrl + "/uploadImage" ;  
+  
+    const formdata: FormData = new FormData();  
+    
+    formdata.append('file', file);  
+     console.log("url "+url.toString());
+    return this.http.post(url , formdata).pipe(
+      tap((prod: Product) => console.log(``)),
+      catchError(this.handleError<Object>('upload'))
+    );
+  }  
+
   getProducts(): Observable<Product[]> {
     return this.http.get<Product[]>(apiUrl+"/list")
       .pipe(
